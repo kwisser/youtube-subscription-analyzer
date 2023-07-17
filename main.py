@@ -30,12 +30,36 @@ def get_subscriptions(youtube):
         if next_page_token is None:
             break
 
+    # Zugriff auf die topicDetails jeder Subscription
+    for subscription in subscriptions:
+        snippet = subscription["snippet"]
+        title = snippet["title"]
+        channelId = snippet["resourceId"]["channelId"]
+
+        # Anfrage für topicDetails
+        response = youtube.channels().list(
+            part="topicDetails",
+            id=channelId
+        ).execute()
+
+        items = response.get("items", [])
+        if items:
+            topicDetails = items[0].get("topicDetails", {})
+        else:
+            topicDetails = {"topicCategories": []}
+
+        print("Kanal-Titel:", title)
+        print("Themenbereiche:", topicDetails.get("topicCategories", []))
+        print("\n")
+
     return subscriptions
+
 
 if __name__ == "__main__":
     youtube = get_authenticated_service()
     subscriptions = get_subscriptions(youtube)
 
     for subscription in subscriptions:
-        print(subscription["snippet"]["title"])
+        print(subscription["snippet"])
+        print("\n")
 
