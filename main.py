@@ -1,4 +1,5 @@
 import os
+import pickle
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
@@ -6,9 +7,17 @@ import googleapiclient.errors
 scopes = ["https://www.googleapis.com/auth/youtube.force-ssl"]
 
 def get_authenticated_service():
-    flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
-        "client_secret.json", scopes)
-    credentials = flow.run_console()
+    credentials_path = "credentials.pickle"
+    if os.path.exists(credentials_path):
+        with open(credentials_path, "rb") as f:
+            credentials = pickle.load(f)
+    else:
+        flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
+            "client_secret.json", scopes)
+        credentials = flow.run_console()
+        with open(credentials_path, "wb") as f:
+            pickle.dump(credentials, f)
+
     youtube = googleapiclient.discovery.build("youtube", "v3", credentials=credentials)
     return youtube
 
