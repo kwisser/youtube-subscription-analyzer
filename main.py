@@ -1,5 +1,6 @@
 import os
 import pickle
+from collections import defaultdict
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
@@ -24,6 +25,7 @@ def get_authenticated_service():
 def get_subscriptions(youtube):
     subscriptions = []
     next_page_token = None
+    topic_count = defaultdict(int)  # Default dictionary to hold count of each topic
 
     while True:
         response = youtube.subscriptions().list(
@@ -54,12 +56,21 @@ def get_subscriptions(youtube):
         items = response.get("items", [])
         if items:
             topicDetails = items[0].get("topicDetails", {})
+            topicCategories = topicDetails.get("topicCategories", [])
         else:
-            topicDetails = {"topicCategories": []}
+            topicCategories = []
+
+        # Count the occurrence of each topic category
+        for topic in topicCategories:
+            topic_count[topic] += 1
 
         print("Kanal-Titel:", title)
-        print("Themenbereiche:", topicDetails.get("topicCategories", []))
+        print("Themenbereiche:", topicCategories)
         print("\n")
+
+    print("Topic counts:")  # Convert back to regular dictionary for printing
+    for topic in topic_count:
+        print(topic, topic_count[topic])
 
     return subscriptions
 
@@ -67,8 +78,3 @@ def get_subscriptions(youtube):
 if __name__ == "__main__":
     youtube = get_authenticated_service()
     subscriptions = get_subscriptions(youtube)
-
-    # for subscription in subscriptions:
-    #     print(subscription["snippet"])
-    #     print("\n")
-
