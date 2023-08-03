@@ -68,7 +68,7 @@ if __name__ == "__main__":
     youtube = get_authenticated_service()
     subscriptions = get_subscriptions(youtube)
 
-    for subscription in subscriptions:
-        print(subscription["snippet"])
-        print("\n")
+    # for subscription in subscriptions:
+    #     print(subscription["snippet"])
+    #     print("\n")
 
