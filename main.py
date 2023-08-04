@@ -4,6 +4,7 @@ from collections import defaultdict
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
+import matplotlib.pyplot as plt
 
 scopes = ["https://www.googleapis.com/auth/youtube.force-ssl"]
 
@@ -41,13 +42,13 @@ def get_subscriptions(youtube):
         if next_page_token is None:
             break
 
-    # Zugriff auf die topicDetails jeder Subscription
+    # Access the topicDetails of each subscription
     for subscription in subscriptions:
         snippet = subscription["snippet"]
         title = snippet["title"]
         channelId = snippet["resourceId"]["channelId"]
 
-        # Anfrage für topicDetails
+        # Request for topicDetails
         response = youtube.channels().list(
             part="topicDetails",
             id=channelId
@@ -64,13 +65,24 @@ def get_subscriptions(youtube):
         for topic in topicCategories:
             topic_count[topic] += 1
 
-        print("Kanal-Titel:", title)
-        print("Themenbereiche:", topicCategories)
+        print("Channel Title:", title)
+        print("Topic Categories:", topicCategories)
         print("\n")
 
-    print("Topic counts:")  # Convert back to regular dictionary for printing
-    for topic in topic_count:
-        print(topic, topic_count[topic])
+    print("Topic counts:")
+    topics = []
+    counts = []
+    for topic, count in topic_count.items():
+        print(topic, count)
+        topics.append(topic.replace("https://en.wikipedia.org/wiki/", ""))
+        counts.append(count)
+
+    plt.bar(topics, counts)
+    plt.xlabel('Topics')
+    plt.ylabel('Counts')
+    plt.title('Distribution of Topics in YouTube Subscriptions')
+    plt.xticks(rotation='vertical')
+    plt.show()
 
     return subscriptions
 
