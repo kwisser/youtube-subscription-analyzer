@@ -69,15 +69,15 @@ def get_subscriptions(youtube):
         for topic in topic_categories:
             topic_count[topic] += 1
 
-        print("Channel Title:", title)
-        print("Topic Categories:", topic_categories)
-        print("\n")
+        # print("Channel Title:", title)
+        # print("Topic Categories:", topic_categories)
+        # print("\n")
 
     print("Topic counts:")
     topics = []
     counts = []
     for topic, count in topic_count.items():
-        print(topic, count)
+        # print(topic, count)
         topics.append(topic.replace("https://en.wikipedia.org/wiki/", ""))
         counts.append(count)
 
@@ -86,6 +86,7 @@ def get_subscriptions(youtube):
     plt.ylabel('Counts')
     plt.title('Distribution of Topics in YouTube Subscriptions')
     plt.xticks(rotation='vertical')
+    plt.gcf().subplots_adjust(bottom=0.44) # Passt den Abstand am unteren Rand der Abbildung an
     plt.show()
 
     return subscriptions
