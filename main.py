@@ -3,8 +3,13 @@ import pickle
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
+import matplotlib.pyplot as plt
+
+from collections import defaultdict
+
 
 scopes = ["https://www.googleapis.com/auth/youtube.force-ssl"]
+
 
 def get_authenticated_service():
     credentials_path = "credentials.pickle"
@@ -18,12 +23,14 @@ def get_authenticated_service():
         with open(credentials_path, "wb") as f:
             pickle.dump(credentials, f)
 
-    youtube = googleapiclient.discovery.build("youtube", "v3", credentials=credentials)
-    return youtube
+    youtube_client = googleapiclient.discovery.build("youtube", "v3", credentials=credentials)
+    return youtube_client
+
 
 def get_subscriptions(youtube):
     subscriptions = []
     next_page_token = None
+    topic_count = defaultdict(int)  # Default dictionary to hold count of each topic
 
     while True:
         response = youtube.subscriptions().list(
@@ -39,27 +46,47 @@ def get_subscriptions(youtube):
         if next_page_token is None:
             break
 
-    # Zugriff auf die topicDetails jeder Subscription
+    # Access the topicDetails of each subscription
     for subscription in subscriptions:
         snippet = subscription["snippet"]
         title = snippet["title"]
-        channelId = snippet["resourceId"]["channelId"]
+        channel_id = snippet["resourceId"]["channelId"]
 
-        # Anfrage für topicDetails
+        # Request for topicDetails
         response = youtube.channels().list(
             part="topicDetails",
-            id=channelId
+            id=channel_id
         ).execute()
 
         items = response.get("items", [])
         if items:
-            topicDetails = items[0].get("topicDetails", {})
+            topic_details = items[0].get("topicDetails", {})
+            topic_categories = topic_details.get("topicCategories", [])
         else:
-            topicDetails = {"topicCategories": []}
+            topic_categories = []
 
-        print("Kanal-Titel:", title)
-        print("Themenbereiche:", topicDetails.get("topicCategories", []))
+        # Count the occurrence of each topic category
+        for topic in topic_categories:
+            topic_count[topic] += 1
+
+        print("Channel Title:", title)
+        print("Topic Categories:", topic_categories)
         print("\n")
+
+    print("Topic counts:")
+    topics = []
+    counts = []
+    for topic, count in topic_count.items():
+        print(topic, count)
+        topics.append(topic.replace("https://en.wikipedia.org/wiki/", ""))
+        counts.append(count)
+
+    plt.bar(topics, counts)
+    plt.xlabel('Topics')
+    plt.ylabel('Counts')
+    plt.title('Distribution of Topics in YouTube Subscriptions')
+    plt.xticks(rotation='vertical')
+    plt.show()
 
     return subscriptions
 
@@ -67,8 +94,3 @@ def get_subscriptions(youtube):
 if __name__ == "__main__":
     youtube = get_authenticated_service()
     subscriptions = get_subscriptions(youtube)
-
-    for subscription in subscriptions:
-        print(subscription["snippet"])
-        print("\n")
-
