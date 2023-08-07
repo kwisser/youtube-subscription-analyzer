@@ -36,9 +36,9 @@ YouTube Subscriptions Analyzer is a Python script that authenticates with the Yo
 
 Run the script with:
 
-\`\`\`bash
+```bash
 python main.py
-\`\`\`
+```
 
 Follow the on-screen instructions to authenticate with your Google account. The script will fetch your YouTube subscriptions and generate a pie chart.
 
