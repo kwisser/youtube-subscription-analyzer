@@ -17,10 +17,10 @@ YouTube Subscriptions Analyzer is a Python script that authenticates with the Yo
 ## Setup
 
 1. **Clone the Repository**:
-   \`\`\`
+   ```
    git clone https://github.com/kwisser/YoutubeSubscriptions.git
    cd youtube-subscriptions-analyzer
-   \`\`\`
+   ```
 
 2. **Install Dependencies**:
    \`\`\`bash
