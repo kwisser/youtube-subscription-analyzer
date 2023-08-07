@@ -23,9 +23,9 @@ YouTube Subscriptions Analyzer is a Python script that authenticates with the Yo
    ```
 
 2. **Install Dependencies**:
-   \`\`\`bash
+   ```bash
    pip install google-auth-oauthlib google-auth-httplib2 google-api-python-client matplotlib
-   \`\`\`
+   ```
 
 3. **Set up Google API credentials**:
    - Visit the [Google Developer Console](https://console.developers.google.com/).
