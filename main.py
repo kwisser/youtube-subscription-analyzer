@@ -81,6 +81,9 @@ def get_subscriptions(youtube):
         topics.append(topic.replace("https://en.wikipedia.org/wiki/", ""))
         counts.append(count)
 
+    plt.figure("Topic Distribution of your YouTube Subscriptions")
+    thismanager = plt.get_current_fig_manager()
+    thismanager.window.wm_iconbitmap("icon.ico")
     plt.bar(topics, counts)
     plt.xlabel('Topics')
     plt.ylabel('Counts')
