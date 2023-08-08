@@ -8,7 +8,7 @@ YouTube Subscriptions Analyzer is a Python script that authenticates with the Yo
 - Aggregates topics across all subscriptions
 - Visualizes the distribution of topics in a pie chart
 
-![Screenshot of the app](./images/screenshot_distribution_of_youtube_subscriptions.JPG)
+![Screenshot of the app](https://github.com/kwisser/youtube-subscription-analyzer/blob/main/images/screenshot_distribution_of_youtube_subscriptions.JPG)
 
 ## Requirements
 
